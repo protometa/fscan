@@ -1,0 +1,26 @@
+{
+  "name": "docpad-fsdb",
+  "version": "0.0.0",
+  "description": "File system database that queries DocPad format metadata.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register",
+    "dev": "mocha -w --compilers coffee:coffee-script/register"
+  },
+  "keywords": [
+    "docpad",
+    "filesystem",
+    "database"
+  ],
+  "author": "Luke Nimtz",
+  "license": "ISC",
+  "devDependencies": {
+    "coffee-script": "~1.7.1",
+    "mocha": "~1.17.1",
+    "should": "~3.1.2"
+  },
+  "dependencies": {
+    "async": "~0.2.10",
+    "yamljs": "~0.1.4"
+  }
+}
