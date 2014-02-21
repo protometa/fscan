@@ -2,7 +2,7 @@
   "name": "docpad-fsdb",
   "version": "0.0.0",
   "description": "File system database that queries DocPad format metadata.",
-  "main": "index.js",
+  "main": "lib/fsdb.coffee",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register",
     "dev": "mocha -w --compilers coffee:coffee-script/register"
