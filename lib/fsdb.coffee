@@ -23,13 +23,13 @@ scan = (filepath, test, found) ->
 					# if test simply returns true return filepath by default, otherwise return testRes as is
 					if testRes is true then res = filepath else res = testRes
 
-					stop = !found( null, res )
+					stop = !found( null, res ) 
 
-				done(stop)
+				done(stop) # if callback returns false stops scanning with err signal
 
 		, (err) ->
-			if err is true then err = null # catch stop signal
-			found(err)
+			if err isnt true # catch stop signal
+				found(err,null)
 
 
 fsdb =
@@ -43,13 +43,9 @@ fsdb =
 
 
 	findOne: (filepath, test, cb) ->
-		res = null
 		scan filepath, test, (err, doc) ->
-			if doc? and not err?
-				res = doc
-			else
-				cb(err,res) # waits for null result to cb
-			return false # stop seeking
+			cb(err,doc)
+			return false # stop scanning
 
 
 	findAll: (filepath, test, cb) ->
@@ -58,7 +54,7 @@ fsdb =
 			if doc? and not err?
 				res.push(doc)
 			else
-				cb(err,res)
+				cb(err,res) # will callback after null result recieved
 		
 
 
