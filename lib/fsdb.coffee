@@ -2,105 +2,64 @@
 fs = require 'fs'
 path = require 'path'
 async = require 'async'
-YAML = require 'yamljs'
 
-metaRegex = /^\s*(([^\s\d\w])\2{2,})(?:\x20*([a-z]+))?([\s\S]*?)\1/
+
+scan = (filepath, test, found) ->
+	# scans filepath and calls found on every hit
+	# iteration can be broken if found returns false
+	# calls found with null result to end
+
+	# console.log 'path:', filepath
+
+	fs.readdir filepath, (err, files) ->
+		if err then found err
+
+		async.eachSeries files, (filename, done) ->
+
+			fs.readFile path.join( filepath, filename ), {encoding: 'utf8'}, (err, filedata) ->
+				if err then found(err)
+				
+				if testRes = test( path.join( filepath, filename ), filedata)
+					# if test simply returns true return filepath by default, otherwise return testRes as is
+					if testRes is true then res = filepath else res = testRes
+
+					stop = !found( null, res )
+
+				done(stop)
+
+		, (err) ->
+			if err is true then err = null # catch stop signal
+			found(err)
+
 
 fsdb =
 
+	find: ([filepath, test, mode]..., cb) ->
+		filepath ?= './'
+		test ?= (-> true)
+		mode ?= 'lazy'
+
+		# TODO ...
+
+
 	findOne: (filepath, test, cb) ->
-
 		res = null
-
-		# console.log 'path:', filepath
-
-		fs.readdir filepath, (err, files) ->
-			if err then cb err
-
-			# console.log files
-
-			async.eachSeries files, (filename, cb) ->
-
-				if res?
-					cb( new Error 'result already found') # terminate iterator
-
-				else
-
-					filedata = ''
-					meta = null
-
-					rs = fs.createReadStream( path.join( filepath, filename ), {encoding: 'utf8'} )
-					.on 'err', (err) ->
-						cb(err)
-					.on 'data', (chunk) ->
-
-						if !meta?
-
-							filedata += chunk
-
-							metaMatch = metaRegex.exec filedata
-
-							if metaMatch
-
-								header = metaMatch[4].trim().replace(/\t/g,'    ')
-
-								meta = YAML.parse( header )
-
-								# console.log meta
-
-								if test.call(meta)
-									res = meta 
-
-					.on 'end', ->
-						cb()
-					
-			, (err) ->
-				if err and err.message isnt 'result already found' then cb(err)
-					
-				cb(null, res)
+		scan filepath, test, (err, doc) ->
+			if doc? and not err?
+				res = doc
+			else
+				cb(err,res) # waits for null result to cb
+			return false # stop seeking
 
 
-	find: (filepath, test, cb) ->
-
+	findAll: (filepath, test, cb) ->
 		res = []
-
-		fs.readdir filepath, (err, files) ->
-			if err then cb(err)
-
-			async.eachSeries files, (filename, cb) ->
-
-				filedata = ''
-				meta = null
-
-				rs = fs.createReadStream( path.join( filepath, filename ), {encoding: 'utf8'} )
-				.on 'err', (err) ->
-					cb(err)
-				.on 'data', (chunk) ->
-
-					if !meta?
-
-						filedata += chunk
-
-						metaMatch = metaRegex.exec filedata
-
-						if metaMatch
-
-							header = metaMatch[4].trim().replace(/\t/g,'    ')
-
-							meta = YAML.parse( header )
-
-							# console.log meta
-
-							if test.call(meta)
-								res.push( meta )
-
-				.on 'end', ->
-					cb()
-
-			, (err) ->
-				if err then cb(err)
-					
-				cb(null, res)
+		scan filepath, test, (err, doc) ->
+			if doc? and not err?
+				res.push(doc)
+			else
+				cb(err,res)
+		
 
 
 
