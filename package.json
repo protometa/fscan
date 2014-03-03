@@ -4,8 +4,7 @@
   "description": "File system database that queries DocPad format metadata.",
   "main": "lib/fsdb.coffee",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register",
-    "dev": "mocha -w --compilers coffee:coffee-script/register"
+    "test": "mocha --compilers coffee:coffee-script/register"
   },
   "keywords": [
     "docpad",
@@ -21,6 +20,7 @@
   },
   "dependencies": {
     "async": "~0.2.10",
-    "yamljs": "~0.1.4"
+    "yamljs": "~0.1.4",
+    "glob": "~3.2.9"
   }
 }
