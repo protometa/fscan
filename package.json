@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Files scanner. Can be used to query files like a database. Bring your own test method.",
   "main": "lib/index.js",
+  "repository":{
+    "type": "git",
+    "url": "https://github.com/protometa/fscan"
+  },
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register",
     "build": "coffee -c -o lib/ src/"
