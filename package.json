@@ -1,26 +1,27 @@
 {
-  "name": "docpad-fsdb",
-  "version": "0.0.0",
-  "description": "File system database that queries DocPad format metadata.",
-  "main": "lib/fsdb.coffee",
+  "name": "fscan",
+  "version": "1.0.0",
+  "description": "Files scanner. Can be used to query files like a database. Bring your own test method.",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register"
+    "test": "mocha --compilers coffee:coffee-script/register",
+    "build": "coffee -c -o lib/ src/"
   },
   "keywords": [
-    "docpad",
     "filesystem",
-    "database"
+    "database",
+    "scan"
   ],
   "author": "Luke Nimtz",
   "license": "ISC",
   "devDependencies": {
     "coffee-script": "~1.7.1",
     "mocha": "~1.17.1",
+    "yamljs": "~0.1.4",
     "should": "~3.1.2"
   },
   "dependencies": {
     "async": "~0.2.10",
-    "yamljs": "~0.1.4",
     "glob": "~3.2.9"
   }
 }
